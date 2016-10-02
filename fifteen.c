@@ -85,66 +85,54 @@ int main(int argc, char *argv[])
 
       // draw the current state of the board
       draw();
+
+
+      // log the current state of the board (for testing)
       for (int i = 0; i < d; i++)
       {
-        for (int j = 0; j < d; j++)
-        {
-          if (i != d-1 || j != d-1)
+          for (int j = 0; j < d; j++)
           {
-            printf("board[%i][%i]: %i\n", i, j, board[i][j]);
+              fprintf(file, "%i", board[i][j]);
+              if (j < d - 1)
+              {
+                  fprintf(file, "|");
+              }
           }
-        }
+          fprintf(file, "\n");
+      }
+      fflush(file);
+
+      // check for win
+      if (won())
+      {
+          printf("You Won!\n");
+          break;
       }
 
+      // prompt for move
+      printf("Tile to move: ");
+      int tile;
+      scanf("%i", &tile);
 
+      // quit if user inputs 0 (for testing)
+      if (tile == 0)
+      {
+          break;
+      }
 
+      // log move (for testing)
+      fprintf(file, "%i\n", tile);
+      fflush(file);
 
-        // log the current state of the board (for testing)
-        for (int i = 0; i < d; i++)
-        {
-            for (int j = 0; j < d; j++)
-            {
-                fprintf(file, "%i", board[i][j]);
-                if (j < d - 1)
-                {
-                    fprintf(file, "|");
-                }
-            }
-            fprintf(file, "\n");
-        }
-        fflush(file);
+      // move if possible, else report illegality
+      if (!move(tile))
+      {
+          printf("\nIllegal move.\n");
+          usleep(500000);
+      }
 
-        // check for win
-        if (won())
-        {
-            printf("You Won!\n");
-            break;
-        }
-
-        // prompt for move
-        printf("Tile to move: ");
-        int tile;
-        scanf("%i", &tile);
-
-        // quit if user inputs 0 (for testing)
-        if (tile == 0)
-        {
-            break;
-        }
-
-        // log move (for testing)
-        fprintf(file, "%i\n", tile);
-        fflush(file);
-
-        // move if possible, else report illegality
-        if (!move(tile))
-        {
-            printf("\nIllegal move.\n");
-            usleep(500000);
-        }
-
-        // sleep thread for animation's sake
-        usleep(500000);
+      // sleep thread for animation's sake
+      usleep(500000);
     }
 
     // close log
@@ -159,8 +147,8 @@ int main(int argc, char *argv[])
  */
 void clear(void)
 {
-    printf("\033[2J");
-    printf("\033[%d;%dH", 0, 0);
+  printf("\033[2J");
+  printf("\033[%d;%dH", 0, 0);
 }
 
 /**
@@ -168,9 +156,9 @@ void clear(void)
  */
 void greet(void)
 {
-    clear();
-    printf("WELCOME TO GAME OF FIFTEEN\n");
-    usleep(200000);
+  clear();
+  printf("WELCOME TO GAME OF FIFTEEN\n");
+  usleep(200000);
 }
 
 /**
